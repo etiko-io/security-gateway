@@ -22,5 +22,5 @@ jobs:
         distribution: 'liberica'
         java-version: '21'
 
-    - name: Build Image
+    - name: Build and test
       run: ./gradlew build test
