@@ -28,6 +28,24 @@ ext {
 	set('springCloudVersion', "2023.0.0")
 }
 
+sourceSets {
+  integration {
+    java {
+      srcDir("$projectDir/src/integration/java")
+    }
+    resources {
+      srcDir("$projectDir/src/integration/resources")
+    }
+    compileClasspath += sourceSets.main.output
+    runtimeClasspath += sourceSets.main.output
+  }
+}
+
+configurations {
+  integrationImplementation.extendsFrom testImplementation
+  integrationRuntime.extendsFrom testRuntime
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
@@ -41,6 +59,9 @@ dependencies {
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+  testImplementation 'org.testcontainers:junit-jupiter'
+
+  integrationImplementation gradleTestKit()
 }
 
 dependencyManagement {
@@ -54,5 +75,14 @@ tasks.named('test') {
 }
 
 tasks.named("bootBuildImage") {
-    imageName = "etiko/security-gateway:${project.version}-${osdetector.arch}"
+  imageName = "etiko/security-gateway:${project.version}-${osdetector.arch}"
+}
+
+task integrationTest(type: Test) {
+  description = "Run integration tests"
+  group = "verification"
+  testClassesDirs = sourceSets.integration.output.classesDirs
+  classpath = sourceSets.integration.runtimeClasspath
+  outputs.upToDateWhen { false }
+  useJUnitPlatform()
 }

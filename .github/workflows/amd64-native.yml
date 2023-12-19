@@ -25,6 +25,16 @@ jobs:
       - name: Build Image
         run: ./gradlew bootBuildImage
 
+      #Run an integration test to make sure the image boots
+      - name: Tags the docker image to be picked up by the integration test
+        run: docker image tag etiko/security-gateway:$GITHUB_REF_NAME-x86_64 etiko/security-gateway:integration-test
+
+      - name: Run the integration test
+        run: ./gradlew --console=verbose -S -i integrationTest
+
+      - name: Remove the integration test tag
+        run: docker rmi etiko/security-gateway:integration-test
+
       #Login to DockerHub
       - name: Login to DockerHub
         uses: docker/login-action@v3
@@ -32,7 +42,6 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      #Tag the version
       #Deploy the image to the Docker registry
       - name: Push Images to Docker Registry
         run: docker push -a etiko/security-gateway
@@ -49,5 +58,7 @@ jobs:
 
       - name: create-manifest
         run: |
+          docker manifest create etiko/security-gateway:$GITHUB_REF_NAME --amend etiko/security-gateway:$GITHUB_REF_NAME-x86_64
+          docker manifest push etiko/security-gateway:$GITHUB_REF_NAME
           docker manifest create etiko/security-gateway:latest --amend etiko/security-gateway:$GITHUB_REF_NAME-x86_64
           docker manifest push etiko/security-gateway:latest
