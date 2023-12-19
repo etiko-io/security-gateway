@@ -1,0 +1,20 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: echo
+        uri: https://this.domain.does.not.exist.example.com
+        predicates:
+        - Path=/**
+        filters:
+        - OAuth2Attribute=id,5174409
+        - OAuth2Attribute=isEnabled,true
+        - OAuth2Attribute=cell,[0-9]{9}
+
+  # security:
+  #   oauth2:
+  #     client:
+  #       registration:
+  #         github:
+  #           client-id: XXX
+  #           client-secret: YYY

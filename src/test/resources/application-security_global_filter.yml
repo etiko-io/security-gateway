@@ -1,0 +1,36 @@
+hac:
+  security:
+    global:
+      oauth2Login: true
+      headers:
+        frame-options: sameorigin
+
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: echo
+        uri: https://this.domain.does.not.exist.example.com
+        predicates:
+        - Path=/**
+        filters:
+        - OAuth2Attribute=login,test_user
+        metadata:
+          '[hac.security.oauth2.client.registrationId]': github-1
+
+  security:
+    oauth2:
+      client:
+        registration:
+          facebook-1:
+            client-id: XXX
+            client-secret: YYY
+            provider: facebook
+          github-1:
+            client-id: XXX
+            client-secret: YYY
+            provider: github
+          google-1:
+            client-id: XXX
+            client-secret: YYY
+            provider: google
