@@ -1,3 +1,11 @@
+server:
+  reactive:
+    session:
+      timeout: 7d
+      cookie:
+        name: _sg_session
+        max-age: 7d
+
 spring:
 
   threads:

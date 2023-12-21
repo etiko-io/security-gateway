@@ -14,9 +14,9 @@ import lombok.Data;
 
 @Validated
 @Configuration
-@ConfigurationProperties("hac")
+@ConfigurationProperties("etiko.sg")
 @Data
-public class HacProperties {
+public class SecurityGatewayProperties {
 
     @Valid
     @NotNull

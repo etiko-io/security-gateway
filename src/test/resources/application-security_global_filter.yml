@@ -1,9 +1,10 @@
-hac:
-  security:
-    global:
-      oauth2Login: true
-      headers:
-        frame-options: sameorigin
+etiko:
+  sg:
+    security:
+      global:
+        oauth2Login: true
+        headers:
+          frame-options: sameorigin
 
 spring:
   cloud:
@@ -16,7 +17,7 @@ spring:
         filters:
         - OAuth2Attribute=login,test_user
         metadata:
-          '[hac.security.oauth2.client.registrationId]': github-1
+          '[sg.security.oauth2.client.registrationId]': github-1
 
   security:
     oauth2:

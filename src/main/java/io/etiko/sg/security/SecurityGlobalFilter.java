@@ -18,7 +18,7 @@ import org.springframework.security.web.server.savedrequest.WebSessionServerRequ
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
-import io.etiko.sg.HacProperties;
+import io.etiko.sg.SecurityGatewayProperties;
 import reactor.core.publisher.Mono;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -27,13 +27,13 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
 @Component
 public class SecurityGlobalFilter implements GlobalFilter, Ordered {
 
-    public static final String ROUTE_METADATA_OAUTH2_CLIENT_REGISTRATION_ID = "hac.security.oauth2.client.registrationId";
+    public static final String ROUTE_METADATA_OAUTH2_CLIENT_REGISTRATION_ID = "sg.security.oauth2.client.registrationId";
 
-    private final HacProperties hacProperties;
+    private final SecurityGatewayProperties sgProperties;
     private final WebFilterChainProxy securityChain;
 
-    public SecurityGlobalFilter(final ApplicationContext applicationContext, HacProperties hacProperties) {
-        this.hacProperties = hacProperties;
+    public SecurityGlobalFilter(final ApplicationContext applicationContext, SecurityGatewayProperties hacProperties) {
+        this.sgProperties = hacProperties;
         this.securityChain = newSecurityChainProxy(applicationContext);
     }
 
@@ -47,7 +47,7 @@ public class SecurityGlobalFilter implements GlobalFilter, Ordered {
         if (securityChain == null) {
             return chain.filter(exchange);
         }
-        final var secProps = hacProperties.getSecurity().getGlobal();
+        final var secProps = sgProperties.getSecurity().getGlobal();
         if (secProps.isOauth2Login() && getRouteOauth2ClientRegistrationId(exchange) == null) {
             final var route = (Route) exchange.getAttribute(GATEWAY_ROUTE_ATTR);
             final var routeId = route == null ? "null" : route.getId();
@@ -58,12 +58,12 @@ public class SecurityGlobalFilter implements GlobalFilter, Ordered {
     }
 
     private WebFilterChainProxy newSecurityChainProxy(final ApplicationContext applicationContext) {
-        if (hacProperties == null || hacProperties.getSecurity() == null
-                || hacProperties.getSecurity().getGlobal() == null) {
+        if (sgProperties == null || sgProperties.getSecurity() == null
+                || sgProperties.getSecurity().getGlobal() == null) {
             return null;
         }
 
-        final var secProps = hacProperties.getSecurity().getGlobal();
+        final var secProps = sgProperties.getSecurity().getGlobal();
 
         final var requestCache = new WebSessionServerRequestCache();
         final var http = new ApplicationContextAwareServerHttpSecurity(applicationContext);
