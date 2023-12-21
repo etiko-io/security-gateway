@@ -1,3 +1,9 @@
+server:
+  reactive:
+    session:
+      cookie:
+        name: _sg_session
+
 spring:
 
   threads:
