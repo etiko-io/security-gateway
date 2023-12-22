@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.DefaultServerRedirectStrategy;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.WebFilterChainProxy;
 import org.springframework.security.web.server.savedrequest.WebSessionServerRequestCache;
 import org.springframework.stereotype.Component;
@@ -32,9 +33,9 @@ public class SecurityGlobalFilter implements GlobalFilter, Ordered {
     private final SecurityGatewayProperties sgProperties;
     private final WebFilterChainProxy securityChain;
 
-    public SecurityGlobalFilter(final ApplicationContext applicationContext, SecurityGatewayProperties hacProperties) {
-        this.sgProperties = hacProperties;
-        this.securityChain = newSecurityChainProxy(applicationContext);
+    public SecurityGlobalFilter(final ApplicationContext applicationContext, SecurityGatewayProperties sgProperties) {
+        this.sgProperties = sgProperties;
+        this.securityChain = new WebFilterChainProxy(newSecurityChain(applicationContext));
     }
 
     @Override
@@ -57,7 +58,7 @@ public class SecurityGlobalFilter implements GlobalFilter, Ordered {
         return securityChain.filter(exchange, chain::filter);
     }
 
-    private WebFilterChainProxy newSecurityChainProxy(final ApplicationContext applicationContext) {
+    SecurityWebFilterChain newSecurityChain(final ApplicationContext applicationContext) {
         if (sgProperties == null || sgProperties.getSecurity() == null
                 || sgProperties.getSecurity().getGlobal() == null) {
             return null;
@@ -117,7 +118,7 @@ public class SecurityGlobalFilter implements GlobalFilter, Ordered {
                 .csrf(c -> c.disable())
                 .logout(l -> l.disable());
 
-        return new WebFilterChainProxy(http.build());
+        return http.build();
     }
 
     private String getRouteOauth2ClientRegistrationId(final ServerWebExchange exchange) {
