@@ -8,7 +8,6 @@ import org.springframework.core.Ordered;
 
 import io.etiko.sg.SecurityGatewayProperties;
 import io.etiko.sg.SecurityGatewayProperties.SecurityRegistrationProperties;
-import io.etiko.sg.SecurityGatewayProperties.SecurityRegistrationProperties.SecurityProperties;;
 
 public class SecurityGlobalFilterTest {
 

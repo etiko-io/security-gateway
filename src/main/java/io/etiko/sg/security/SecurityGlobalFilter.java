@@ -35,7 +35,12 @@ public class SecurityGlobalFilter implements GlobalFilter, Ordered {
 
     public SecurityGlobalFilter(final ApplicationContext applicationContext, SecurityGatewayProperties sgProperties) {
         this.sgProperties = sgProperties;
-        this.securityChain = new WebFilterChainProxy(newSecurityChain(applicationContext));
+        final var sc = newSecurityChain(applicationContext);
+        if (sc != null) {
+            this.securityChain = new WebFilterChainProxy(sc);
+        } else {
+            this.securityChain = null;
+        }
     }
 
     @Override
