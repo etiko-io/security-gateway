@@ -1,3 +1,9 @@
+# Build
+
+```shell
+./gradlew build
+```
+
 # Release
 
 ```shell
