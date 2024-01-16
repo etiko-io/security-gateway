@@ -13,5 +13,6 @@ git push origin v#.#.#
 
 # TODO
 
+- [ ] More security header support
 - [ ] Unit tests
 - [ ] Local authentication
