@@ -10,3 +10,8 @@
 git tag v#.#.#
 git push origin v#.#.#
 ```
+
+# TODO
+
+[ ] Unit tests
+[ ] Local authentication
