@@ -13,5 +13,5 @@ git push origin v#.#.#
 
 # TODO
 
-[ ] Unit tests
-[ ] Local authentication
+- [ ] Unit tests
+- [ ] Local authentication
